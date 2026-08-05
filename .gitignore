@@ -1,0 +1,8 @@
+.envrc.private
+.colors/
+.devenv/
+.direnv/
+target/
+node_modules/
+.clj-kondo/.cache/
+.lsp/.cache/

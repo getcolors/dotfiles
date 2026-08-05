@@ -1,0 +1,7 @@
+# Example desired state. This package needs no credentials.
+profile: dotfiles-example
+workdir: .colors
+
+dotfiles-profile: ubuntu
+dotfiles-target: "~"
+dotfiles-prevent-overwrite: true

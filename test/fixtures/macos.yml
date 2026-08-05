@@ -1,0 +1,5 @@
+profile: dotfiles-macos-fixture
+workdir: .colors
+dotfiles-profile: macos
+dotfiles-target: /tmp/dotfiles-target
+dotfiles-prevent-overwrite: true

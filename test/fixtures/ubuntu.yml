@@ -1,0 +1,5 @@
+profile: dotfiles-ubuntu-fixture
+workdir: .colors
+dotfiles-profile: ubuntu
+dotfiles-target: /tmp/dotfiles-target
+dotfiles-prevent-overwrite: true
