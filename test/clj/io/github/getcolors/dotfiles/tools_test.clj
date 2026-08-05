@@ -17,6 +17,19 @@
                      (= "Library/Application Support/doctl/config.yaml" %))
                 (mapcat tools/profile-files ["ubuntu" "macos"]))))
 
+(deftest packaged-profiles-are-fully-rendered
+  (doseq [profile ["ubuntu" "macos"]
+          path (tools/profile-files profile)
+          :let [url (io/resource
+                     (str "io/github/getcolors/dotfiles/profiles/"
+                          profile "/" path))
+                text (when-not (re-find #"\.(png|svg)$" path) (slurp url))]]
+    (when text
+      (is (not (re-find #"\{[{%]" text))
+          (str profile "/" path " contains an unresolved template"))
+      (is (not (re-find #"lookup-env" text))
+          (str profile "/" path " can materialize an environment secret")))))
+
 (deftest render-is-exact-and-removes-stale-output
   (doseq [profile ["ubuntu" "macos"]]
     (let [workdir (temp-dir)
