@@ -19,15 +19,18 @@
 (deftest build-renders-and-create-installs
   (is (= [:dotfiles/render] (steps-for :build :dotfiles/start)))
   (is (= [] (steps-for :build :dotfiles/render)))
-  (is (= [:dotfiles/install] (steps-for :create :dotfiles/render))))
+  (is (= [:dotfiles/install] (steps-for :create :dotfiles/render)))
+  (is (= [:dotfiles/diff] (steps-for :diff :dotfiles/render))))
 
 (deftest every-side-effect-is-dry-runnable
   (is (= #{:dotfiles/render :dotfiles/install}
          (set workflow/side-effecting-steps))))
 
-(deftest build-and-dry-run-need-no-credentials
+(deftest build-diff-and-dry-run-need-no-credentials
   (is (= 0 (:green/exit
             (workflow/start-step (assoc vt/base :green/event :build) {}))))
+  (is (= 0 (:green/exit
+            (workflow/start-step (assoc vt/base :green/event :diff) {}))))
   (is (= 0 (:green/exit
             (workflow/start-step
              (assoc vt/base :green/event :create :green/dry-run true) {})))))

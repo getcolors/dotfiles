@@ -15,7 +15,7 @@ state or performing a real create.
 - `colors.yml` contains non-secret desired state only.
 - Never export `COLORS_PAR_PROFILE`.
 - Never edit or commit `.colors/`.
-- Build and `create --dry-run` are safe defaults.
+- Build, diff, and `create --dry-run` are safe defaults.
 - Keep `dotfiles-prevent-overwrite: true`. Lift it for one authorized create
   with `COLORS_PAR_DOTFILES_PREVENT_OVERWRITE=false`.
 - `delete` is unsupported: the package never removes files from a home directory.
@@ -25,6 +25,7 @@ state or performing a real create.
 
 ```sh
 ./green build
+./green diff
 ./green create --dry-run
 COLORS_PAR_DOTFILES_PREVENT_OVERWRITE=false ./green create
 ```
@@ -34,5 +35,5 @@ COLORS_PAR_DOTFILES_PREVENT_OVERWRITE=false ./green create
 1. Copy `green` beside this file to the project root and make it executable.
 2. Create `colors.yml` from the configuration reference.
 3. Ignore `.colors/` and `.envrc.private`.
-4. Build and inspect the generated profile.
+4. Build or diff and inspect the generated profile.
 5. Dry-run before an explicitly authorized create.

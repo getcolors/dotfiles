@@ -150,13 +150,14 @@
 ;; ---------------------------------------------------------------------------
 ;; CLI
 
-(def lifecycle-commands #{"build" "create"})
+(def lifecycle-commands #{"build" "diff" "create"})
 
 (def usage
-  (str "Usage: green <build|create> "
+  (str "Usage: green <build|diff|create> "
        "[-f|--file colors.yml] [--dry-run]\n"
        "\n"
        "  build     render the selected profile under .colors only\n"
+       "  diff      render and compare managed files with the target\n"
        "  create    install the selected profile into its target\n"
        "  delete    unsupported; managed home files are never removed"))
 

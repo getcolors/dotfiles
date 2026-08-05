@@ -37,10 +37,12 @@
 (defn wire-fn [step run-opts]
   (case step
     :dotfiles/start [start-step :dotfiles/render]
-    :dotfiles/render (if (= :create (:green/event run-opts))
-                       [tools/render-step :dotfiles/install]
+    :dotfiles/render (case (:green/event run-opts)
+                       :create [tools/render-step :dotfiles/install]
+                       :diff [tools/render-step :dotfiles/diff]
                        [tools/render-step])
-    :dotfiles/install [tools/install-step]))
+    :dotfiles/install [tools/install-step]
+    :dotfiles/diff [tools/diff-step]))
 
 (def side-effecting-steps [:dotfiles/render :dotfiles/install])
 

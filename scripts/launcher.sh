@@ -59,6 +59,11 @@ out=$( (cd "$copy/deep/nested" && DOTFILES_LIB_ROOT="$root" ./../../green build 
   fail "subdirectory invocation rendered in the wrong place"
 ok "finds colors.yml by walking up"
 
+out=$( (cd "$copy" && DOTFILES_LIB_ROOT="$root" ./green diff 2>&1) ) ||
+  fail "diff should remain informational: $out"
+grep -q -- '--- ' <<<"$out" || fail "diff did not print unified output: $out"
+ok "diff renders and prints unified differences without failing"
+
 grep -q launcher-contract "$launcher" || fail "contract handshake is missing"
 grep -q 'def contract' "$root/src/clj/io/github/getcolors/dotfiles/utils.clj" ||
   fail "library contract is missing"
@@ -67,5 +72,10 @@ ok "launcher and library expose a contract handshake"
 out=$( (cd "$copy" && DOTFILES_LIB_ROOT="$root" ./green delete 2>&1) || true )
 echo "$out" | grep -q 'unsupported' || fail "delete should be unsupported: $out"
 ok "delete is explicitly unsupported"
+
+for verb in build diff create; do
+  grep -q "\"$verb\"" "$launcher" || fail "launcher no longer accepts $verb"
+done
+ok "every supported command is dispatchable"
 
 echo "launcher: $checks checks passed"

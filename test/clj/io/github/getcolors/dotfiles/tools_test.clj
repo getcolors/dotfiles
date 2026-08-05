@@ -59,3 +59,25 @@
       (is (= -1 (java.nio.file.Files/mismatch
                  (.toPath (io/file (:dotfiles/rendered-dir rendered) path))
                  (.toPath (io/file target path))))))))
+
+(deftest diff-is-informational-for-changed-and-missing-targets
+  (let [workdir (temp-dir)
+        target (temp-dir)
+        opts {:profile "diff-test" :workdir workdir
+              :dotfiles-profile "ubuntu" :dotfiles-target target}
+        rendered (tools/render-step opts)
+        installed (tools/install-step rendered)]
+    (is (= 0 (:green/exit (tools/diff-step installed))))
+    (spit (io/file target ".gitconfig") "changed\n")
+    (let [result (atom nil)
+          output (with-out-str (reset! result (tools/diff-step rendered)))]
+      (is (= 0 (:green/exit @result)))
+      (is (re-find #"@@" output))
+      (is (re-find #"\.gitconfig" output))
+      (is (re-find #"redacted target content" output))
+      (is (not (re-find #"changed" output))))
+    (.delete (io/file target ".doom.d/packages.el"))
+    (let [result (atom nil)
+          output (with-out-str (reset! result (tools/diff-step rendered)))]
+      (is (= 0 (:green/exit @result)))
+      (is (re-find #"packages\.el" output)))))

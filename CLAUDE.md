@@ -15,6 +15,7 @@ bb test
 bb golden
 ./scripts/launcher.sh
 ./green build
+./green diff
 ./green create --dry-run
 ```
 
@@ -30,6 +31,9 @@ files into the configured local target. `delete` is unsupported.
   through `COLORS_PAR_DOTFILES_PREVENT_OVERWRITE=false`.
 - Build replaces `.colors/<profile>/dotfiles`; create copies those managed files
   to `dotfiles-target` and verifies them byte-for-byte.
+- Diff renders first, then prints target-to-rendered unified differences. Drift
+  and missing targets are informational; operational failures remain errors.
+  Target-only line content is redacted because local files may contain secrets.
 - Keep behaviour in library namespaces, not the copied launcher.
 - After pushing package code, run `bb pin`, commit, and push. Consumers must
   synchronize their installed launcher copy after every update.
