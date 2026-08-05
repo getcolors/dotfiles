@@ -74,8 +74,7 @@
       (is (= 0 (:green/exit @result)))
       (is (re-find #"@@" output))
       (is (re-find #"\.gitconfig" output))
-      (is (re-find #"redacted target content" output))
-      (is (not (re-find #"changed" output))))
+      (is (re-find #"changed" output)))
     (.delete (io/file target ".doom.d/packages.el"))
     (let [result (atom nil)
           output (with-out-str (reset! result (tools/diff-step rendered)))]

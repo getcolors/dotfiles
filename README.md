@@ -16,7 +16,6 @@ COLORS_PAR_DOTFILES_PREVENT_OVERWRITE=false ./green create
 
 `diff` renders first and prints color unified differences against the target.
 Ordinary drift and missing target files are informational and exit successfully.
-Target-only line contents are redacted so local credentials cannot leak.
 `delete` is intentionally unsupported.
 
 ## Install into a project

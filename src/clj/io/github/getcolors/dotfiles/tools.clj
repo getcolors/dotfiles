@@ -79,14 +79,6 @@
   {:reset "\u001b[0m" :bold "\u001b[1m" :cyan "\u001b[36m"
    :red "\u001b[31m" :green "\u001b[32m"})
 
-(defn- safe-diff-line
-  "Redact target-only content: local managed files may have acquired secrets."
-  [line]
-  (if (and (str/starts-with? line "-")
-           (not (str/starts-with? line "--- ")))
-    "-[redacted target content]"
-    line))
-
 (defn- line-color [line]
   (cond
     (or (str/starts-with? line "--- ") (str/starts-with? line "+++ ")) :bold
@@ -95,9 +87,8 @@
     (str/starts-with? line "+") :green))
 
 (defn- print-diff! [text color?]
-  (doseq [raw (str/split-lines text)]
-    (let [line (safe-diff-line raw)
-          color (when color? (line-color line))]
+  (doseq [line (str/split-lines text)]
+    (let [color (when color? (line-color line))]
       (if color
         (println (str (get ansi color) line (:reset ansi)))
         (println line)))))

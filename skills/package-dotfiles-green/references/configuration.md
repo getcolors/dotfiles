@@ -18,8 +18,7 @@ the filesystem root is always refused.
 A build replaces only the generated profile tree. Diff renders that tree first,
 then prints target-to-rendered unified differences with color when supported.
 Changed and missing target files are informational and leave exit status 0;
-target-only line contents are redacted to avoid exposing credentials acquired
-locally. Rendering, configuration, and I/O errors remain failures. A create copies every
+rendering, configuration, and I/O errors remain failures. A create copies every
 managed file into the target and verifies the result byte-for-byte. It never
 removes unrelated files. Credential-bearing `.aws/credentials` and DigitalOcean CLI
 configuration from the source project are deliberately excluded.
