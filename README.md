@@ -7,6 +7,13 @@ a selected profile reproducibly under `.colors/`, and installs only those files
 into an explicitly configured local target. Credential-bearing AWS and
 DigitalOcean CLI files are excluded.
 
+Shared files live under `src/resources/io/github/getcolors/dotfiles/common/`.
+Files used by only one platform live under `profiles/<profile>/`. Common files
+are Selmer templates with the final output filename and can use
+`{% if profile = "macos" %}` conditionals. The renderer discovers and sorts
+resources at runtime; defining the same path in common and a profile is an
+error.
+
 ```sh
 ./green build
 ./green diff

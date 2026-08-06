@@ -3,20 +3,71 @@
   (:require
    [babashka.fs :as fs]
    [babashka.process :as process]
-   [clojure.edn :as edn]
    [clojure.java.io :as io]
    [clojure.string :as str]
-   [io.github.getcolors.dotfiles.utils :as utils]))
+   [io.github.getcolors.dotfiles.utils :as utils]
+   [selmer.parser :as selmer]))
 
 (def tool "dotfiles")
 (def ^:private resource-root "io/github/getcolors/dotfiles")
 (def ^:private executable-paths #{".local/bin/dev"})
 
-(def manifest
-  (delay (-> (str resource-root "/manifest.edn") io/resource slurp edn/read-string)))
+(defn- resource-files
+  "Discover sorted file paths below a classpath resource directory."
+  [dir]
+  (let [resource-dir (str resource-root "/" dir)
+        url (io/resource resource-dir)
+        prefix (str resource-dir "/")]
+    (if-not url
+      []
+      (case (.getProtocol url)
+        "file"
+        (let [root (io/file url)]
+          (->> (file-seq root)
+               (filter #(.isFile %))
+               (map #(str/replace (str (.relativize (.toPath root) (.toPath %)))
+                                  java.io.File/separator "/"))
+               sort
+               vec))
+
+        "jar"
+        (let [connection (.openConnection url)
+              entries (enumeration-seq (.entries (.getJarFile connection)))]
+          (->> entries
+               (remove #(.isDirectory %))
+               (map #(.getName %))
+               (filter #(str/starts-with? % prefix))
+               (map #(subs % (count prefix)))
+               (remove str/blank?)
+               sort
+               vec))
+
+        (throw (ex-info (str "unsupported resource protocol: " (.getProtocol url))
+                        {:dir dir :url (str url)}))))))
+
+(defn- profile-resources [profile]
+  (let [profile (str profile)
+        roots [["common" (resource-files "common")]
+               [(str "profiles/" profile)
+                (resource-files (str "profiles/" profile))]]
+        resources (for [[root paths] roots
+                        path paths]
+                    {:path path :resource (str resource-root "/" root "/" path)
+                     :template? (= root "common")})
+        duplicates (->> resources
+                        (map :path)
+                        frequencies
+                        (keep (fn [[path n]] (when (> n 1) path)))
+                        sort
+                        vec)]
+    (when (seq duplicates)
+      (throw (ex-info (str "duplicate common/profile dotfiles: "
+                           (str/join ", " duplicates))
+                      {:profile profile :paths duplicates})))
+    (sort-by :path resources)))
 
 (defn profile-files [profile]
-  (get @manifest (str profile)))
+  (mapv :path (profile-resources profile)))
 
 (defn tool-dir
   "Resolve generated output beside colors.yml, never relative to the caller."
@@ -26,9 +77,6 @@
                     (some-> (:green/state-file opts) io/file .getAbsoluteFile .getParent))
         root (if state-dir (io/file state-dir workdir) workdir)]
     (str (io/file root (or (:profile opts) "dotfiles") tool))))
-
-(defn- resource-name [profile path]
-  (str resource-root "/profiles/" profile "/" path))
 
 (defn- copy-stream! [input target executable?]
   (let [target (io/file target)]
@@ -40,19 +88,30 @@
       (.setExecutable target true false))
     target))
 
+(defn- render-template! [input target profile executable?]
+  (let [target (io/file target)]
+    (io/make-parents target)
+    (spit target (selmer/render (slurp input) {:profile profile}))
+    (when executable?
+      (.setExecutable target true false))
+    target))
+
 (defn render-step
-  "Replace the generated profile tree with an exact copy of packaged resources."
+  "Replace the generated profile tree with common templates and profile files."
   [opts]
   (let [profile (str (:dotfiles-profile opts))
         dir (io/file (tool-dir opts))]
     (when (fs/exists? dir) (fs/delete-tree dir))
-    (doseq [path (profile-files profile)]
-      (let [resource (io/resource (resource-name profile path))]
+    (doseq [{:keys [path resource template?]} (profile-resources profile)]
+      (let [resource (io/resource resource)
+            target (io/file dir path)
+            executable? (contains? executable-paths path)]
         (when-not resource
           (throw (ex-info (str "missing packaged dotfile: " path)
                           {:profile profile :path path})))
-        (copy-stream! resource (io/file dir path)
-                      (contains? executable-paths path))))
+        (if template?
+          (render-template! resource target profile executable?)
+          (copy-stream! resource target executable?))))
     (assoc opts :dotfiles/rendered-dir (str dir))))
 
 (defn install-step

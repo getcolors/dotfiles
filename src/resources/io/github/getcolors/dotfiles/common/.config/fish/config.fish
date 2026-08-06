@@ -1,13 +1,13 @@
 if status is-interactive
     set -gx DIRENV_LOG_FORMAT ""
-
+{% if profile = "macos" %}
     /opt/homebrew/bin/brew shellenv | source
-    starship init fish | source
+{% endif %}    starship init fish | source
     zoxide init fish | source
     direnv hook fish | source
     # workaround https://github.com/atuinsh/atuin/issues/2940
     atuin init fish | sed "s/-k up/up/g" | source
-
+{% if profile = "macos" %}
     # https://www.packetmischief.ca/2016/09/06/ssh-agent-on-os-x/
     set -gx SSH_AUTH_SOCK (launchctl getenv SSH_AUTH_SOCK)
 
@@ -18,7 +18,7 @@ if status is-interactive
 
     # docker ssh
     set -gx DOCKER_HOST ssh://walter
-
+{% endif %}
     #asdf
     if test -z $ASDF_DATA_DIR
         set _asdf_shims "$HOME/.asdf/shims"
@@ -42,7 +42,7 @@ if status is-interactive
     end
 
     # pnpm setup
-    set -gx PNPM_HOME "/Users/amiorin/Library/pnpm"
+    set -gx PNPM_HOME "{% if profile = "macos" %}/Users/amiorin/Library/pnpm{% else %}$HOME/.local/share/pnpm{% endif %}"
     if not string match -q -- $PNPM_HOME $PATH
         set -gx PATH "$PNPM_HOME/bin" $PATH
     end
@@ -109,5 +109,6 @@ if status is-interactive
     # misc
     set -gx POETRY_VIRTUALENVS_IN_PROJECT true
     set -gx TZ 'Europe/Berlin'
-
-end
+{% if profile = "ubuntu" %}    set -gx LOCALE_ARCHIVE /usr/lib/locale/locale-archive
+{% else %}
+{% endif %}end

@@ -22,3 +22,5 @@
            :files ("visual-fill-column.el")))
 (package! adoc-mode)
 (package! rainbow-delimiters)
+{% if profile = "macos" %}(package! ghostel)
+{% endif %}

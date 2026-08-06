@@ -1,0 +1,5 @@
+[global]
+load_dotenv = true
+hide_env_diff = true
+[whitelist]
+prefix = [{% if profile = "macos" %}"/Users/amiorin/Library/Mobile Documents/iCloud~md~obsidian/Documents/alberto", "~/code/bigconfig", "~/code/personal", "~/code/of"{% else %}"~/Library/Mobile Documents/iCloud~md~obsidian/Documents/alberto", "~/code/getcolors", "~/code/amiorin", "~/code/bigconfig-ai"{% endif %}]

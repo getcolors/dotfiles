@@ -1,0 +1,8 @@
+layout {
+    pane size=1 borderless=true {
+        plugin location="zellij:tab-bar"
+    }
+    pane command="{% if profile = "macos" %}/opt/homebrew/bin/emacs{% else %}emacs{% endif %}" {
+        args "--init-directory" "{% if profile = "macos" %}/Users/amiorin/.config/neoemacs{% else %}~/.config/neoemacs{% endif %}" "-nw"
+    }
+}

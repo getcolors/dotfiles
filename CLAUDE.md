@@ -31,6 +31,10 @@ files into the configured local target. `delete` is unsupported.
   through `COLORS_PAR_DOTFILES_PREVENT_OVERWRITE=false`.
 - Build replaces `.colors/<profile>/dotfiles`; create copies those managed files
   to `dotfiles-target` and verifies them byte-for-byte.
+- Shared files are final-filename Selmer templates under
+  `src/resources/io/github/getcolors/dotfiles/common/`; profile-only files are
+  under `profiles/<profile>/`. Runtime discovery is sorted and rejects duplicate
+  paths. Templates receive only `profile` and use Selmer `if` tags for variants.
 - Diff renders first, then prints target-to-rendered unified differences. Drift
   and missing targets are informational; operational failures remain errors.
 - Keep behaviour in library namespaces, not the copied launcher.
