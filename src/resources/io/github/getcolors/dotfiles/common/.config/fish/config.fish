@@ -2,6 +2,11 @@ if status is-interactive
     set -gx DIRENV_LOG_FORMAT ""
 {% if profile = "macos" %}
     /opt/homebrew/bin/brew shellenv | source
+
+    # load nix if not loaded
+    if not command -q nix; and test -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
+        source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
+    end
 {% endif %}    starship init fish | source
     zoxide init fish | source
     direnv hook fish | source
@@ -14,10 +19,8 @@ if status is-interactive
     # brew
     set -gx HOMEBREW_NO_AUTO_UPDATE true
 
-    # github credentials
-
     # docker ssh
-    set -gx DOCKER_HOST ssh://walter
+    set -gx DOCKER_HOST ssh://walter-oci
 {% endif %}
     #asdf
     if test -z $ASDF_DATA_DIR
@@ -60,23 +63,6 @@ if status is-interactive
     # ansible
     # register-cmd ansible
     # register-cmd ansible-playbook
-
-    # multi-account github
-    if test -n "$GITHUB_TOKEN"
-        git config --global url."https://$GITHUB_TOKEN:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-    end
-
-    if test -n "$GITHUB_TOKEN_ALPHA"
-        git config --global url."https://$GITHUB_TOKEN_ALPHA:x-oauth-basic@github.com/".insteadOf "https://alpha@github.com/"
-    end
-
-    if test -n "$GITHUB_TOKEN_BETA"
-        git config --global url."https://$AMIORIN_TOKEN_BETA:x-oauth-basic@github.com/".insteadOf "https://beta@github.com/"
-    end
-
-    if test -n "$GITHUB_TOKEN_GAMMA"
-        git config --global url."https://$FACUNDO_TOKEN_GAMMA:x-oauth-basic@github.com/".insteadOf "https://gamma@github.com/"
-    end
 
     fish_vi_key_bindings
     # cursor style like vim

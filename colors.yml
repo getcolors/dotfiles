@@ -2,6 +2,6 @@
 profile: dotfiles-example
 workdir: .colors
 
-dotfiles-profile: ubuntu
+dotfiles-profile: macos
 dotfiles-target: "~"
 dotfiles-prevent-overwrite: true
