@@ -39,10 +39,16 @@ if status is-interactive
     set -gx --prepend PATH $_asdf_shims
     set --erase _asdf_shims
 
-    # agent setup
-    if SSH_AUTH_SOCK=/tmp/$ZELLIJ_SESSION_NAME.agent ssh-add -l > /dev/null 2>&1
-        set -gx SSH_AUTH_SOCK /tmp/$ZELLIJ_SESSION_NAME.agent
+{% if profile = "ubuntu" %}
+    # Expose the current agent at the stable path used by Emacs.
+    if set -q SSH_AUTH_SOCK; and test -S "$SSH_AUTH_SOCK"
+        set -l agent_sock "/tmp/"(whoami)"@"(hostname)".agent"
+        if test "$SSH_AUTH_SOCK" != "$agent_sock"
+            ln -sfn "$SSH_AUTH_SOCK" "$agent_sock"
+        end
+        set -gx SSH_AUTH_SOCK "$agent_sock"
     end
+{% endif %}
 
     # pnpm setup
     set -gx PNPM_HOME "{% if profile = "macos" %}/Users/amiorin/Library/pnpm{% else %}$HOME/.local/share/pnpm{% endif %}"
