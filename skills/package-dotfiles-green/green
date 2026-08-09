@@ -47,7 +47,7 @@
 ;; cannot resolve its own library says so rather than inventing a SHA or
 ;; silently falling back to whatever is lying around. `bb pin` refuses to stamp
 ;; a dirty or unpushed HEAD for the same reason.
-(def ^:private dotfiles-sha "147fdb1c38f659396d0a0530f6a56770f0979ffc")
+(def ^:private dotfiles-sha "3e9ea9cda963e97f1045270395b32601ebe84732")
 
 (def ^:private dotfiles-git-url "https://github.com/getcolors/dotfiles.git")
 (def ^:private green-git-url "https://github.com/getcolors/green.git")
