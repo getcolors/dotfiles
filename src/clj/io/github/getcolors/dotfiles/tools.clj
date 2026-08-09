@@ -5,6 +5,7 @@
    [babashka.process :as process]
    [clojure.java.io :as io]
    [clojure.string :as str]
+   [green.cli :as green-cli]
    [io.github.getcolors.dotfiles.utils :as utils]
    [selmer.parser :as selmer]))
 
@@ -72,11 +73,7 @@
 (defn tool-dir
   "Resolve generated output beside colors.yml, never relative to the caller."
   [opts]
-  (let [workdir (io/file (or (:workdir opts) ".colors"))
-        state-dir (when-not (.isAbsolute workdir)
-                    (some-> (:green/state-file opts) io/file .getAbsoluteFile .getParent))
-        root (if state-dir (io/file state-dir workdir) workdir)]
-    (str (io/file root (or (:profile opts) "dotfiles") tool))))
+  (green-cli/stage-dir opts tool {:default-profile "dotfiles"}))
 
 (defn- copy-stream! [input target executable?]
   (let [target (io/file target)]
