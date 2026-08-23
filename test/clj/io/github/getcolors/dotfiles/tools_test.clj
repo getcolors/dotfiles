@@ -11,8 +11,8 @@
     (str f)))
 
 (deftest manifests-cover-both-profiles-and-no-credentials
-  (is (= 17 (count (tools/profile-files "ubuntu"))))
-  (is (= 23 (count (tools/profile-files "macos"))))
+  (is (= 16 (count (tools/profile-files "ubuntu"))))
+  (is (= 22 (count (tools/profile-files "macos"))))
   (is (not-any? #(or (= ".aws/credentials" %)
                      (= "Library/Application Support/doctl/config.yaml" %))
                 (mapcat tools/profile-files ["ubuntu" "macos"]))))
@@ -45,8 +45,7 @@
         (is (not (.exists (io/file dir "stale"))))
         (is (= (count (tools/profile-files profile))
                (count (filter #(.isFile %) (file-seq dir)))))
-        (is (= (str dir) (:dotfiles/rendered-dir result)))
-        (is (.canExecute (io/file dir ".local/bin/dev")))))))
+        (is (= (str dir) (:dotfiles/rendered-dir result)))))))
 
 (deftest install-copies-and-verifies-managed-files
   (let [workdir (temp-dir)

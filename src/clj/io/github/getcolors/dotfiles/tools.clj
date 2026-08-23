@@ -11,7 +11,7 @@
 
 (def tool "dotfiles")
 (def ^:private resource-root "io/github/getcolors/dotfiles")
-(def ^:private executable-paths #{".local/bin/dev"})
+(def ^:private executable-paths #{})
 
 (defn- resource-files
   "Discover sorted file paths below a classpath resource directory."
