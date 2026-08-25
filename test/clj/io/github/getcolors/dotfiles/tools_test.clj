@@ -11,8 +11,8 @@
     (str f)))
 
 (deftest manifests-cover-both-profiles-and-no-credentials
-  (is (= 16 (count (tools/profile-files "ubuntu"))))
-  (is (= 22 (count (tools/profile-files "macos"))))
+  (is (= 17 (count (tools/profile-files "ubuntu"))))
+  (is (= 23 (count (tools/profile-files "macos"))))
   (is (not-any? #(or (= ".aws/credentials" %)
                      (= "Library/Application Support/doctl/config.yaml" %))
                 (mapcat tools/profile-files ["ubuntu" "macos"]))))
