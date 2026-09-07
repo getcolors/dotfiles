@@ -51,7 +51,7 @@ if status is-interactive
 {% endif %}
 
     # pnpm setup
-    set -gx PNPM_HOME "{% if profile = "macos" %}/Users/amiorin/Library/pnpm{% else %}$HOME/.local/share/pnpm{% endif %}"
+    set -gx PNPM_HOME "{% if profile = "macos" %}$HOME/Library/pnpm{% else %}$HOME/.local/share/pnpm{% endif %}"
     if not string match -q -- $PNPM_HOME $PATH
         set -gx PATH "$PNPM_HOME/bin" $PATH
     end
