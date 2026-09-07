@@ -1,0 +1,81 @@
+(defcfg
+  process-unmapped-keys yes
+  macos-dev-names-include (
+  "SONSEI"
+  "Sonsei-BLE - 1"
+  "Sonsei-BLE - 2"
+  "Sonsei-BLE - 3"
+  "Sonsei-BLE - 4"
+  "Sonsei-BLE - 5"
+  )
+)
+
+(defsrc
+q	w	e	r	t		y	u	i	o	p
+a	s	d	f	g		h	j	k	l	bspc
+z	x	c	v	b		n	m	,	.	/
+			tab	esc		spc	ret
+)
+
+(deflayer alpha
+q	w	e	r	t		y	u	i	o	p
+a	s	d	f	g		h	j	k	l	bspc
+@l-z	@l-x	c	v	b		n	m	,	@r-.	@r-/
+			@tab	@nav		@sym	@ret
+)
+
+(deflayer nav
+M-f6	M-f7	M-f8	M-f9	M-f10 		M-f11	M-f12	M-f13	M-f16	M-f17
+M-f1	M-f2	M-f3	M-f4	M-f5		lft	down	up	rght	_
+@l-1	@l-2	@l-3	@l-4	5   		6	@r-7	@r-8	@r-9	@r-0
+			_	_		_	_
+)
+
+(deflayer sym
++	S-6	{	}	S-5		S-7	S-,	S-.	S-4	S-\
+_	S-'	S-9	S-0	S-1		S-/	S-;	S-2	S-`	_
+@l-min	@l-eql	@l-lbrk	@l-rbrk	S-3		S-8	@r-scln	@r-grv	@r-bksl	@r-apo
+			_	_		_	_
+)
+
+(defalias
+  tab (tap-hold-press 0 200 tab lmet)
+  nav (tap-hold-press 0 200 esc (layer-while-held nav))
+  sym (tap-hold-press 0 200 spc (layer-while-held sym))
+  ret (tap-hold-press 0 200 ret lctl)
+  l-z    (tap-hold-press 0 200 z   lsft)
+  l-x    (tap-hold-press 0 200 x   lalt)
+  r-.    (tap-hold-press 0 200 .   lalt)
+  r-/    (tap-hold-press 0 200 /   lsft)
+  l-1    (tap-hold-press 0 200 1   lsft)
+  l-2    (tap-hold-press 0 200 2   lalt)
+  l-3    (tap-hold-press 0 200 3   lctl)
+  l-4    (tap-hold-press 0 200 4   lmet)
+  r-7    (tap-hold-press 0 200 7   lmet)
+  r-8    (tap-hold-press 0 200 8   lctl)
+  r-9    (tap-hold-press 0 200 9   lalt)
+  r-0    (tap-hold-press 0 200 0   lsft)
+  l-min  (tap-hold-press 0 200 -   lsft)
+  l-eql  (tap-hold-press 0 200 =   lalt)
+  l-lbrk (tap-hold-press 0 200 [   lctl)
+  l-rbrk (tap-hold-press 0 200 ]   lmet)
+  r-scln (tap-hold-press 0 200 ;   lmet)
+  r-grv  (tap-hold-press 0 200 `   lctl)
+  r-bksl (tap-hold-press 0 200 \   lalt)
+  r-apo  (tap-hold-press 0 200 '   lsft)
+)
+
+;; Converted from ~/.config/skhd/skhdrc
+(defoverridesv2
+  ;; prev/next tab in chrome: cmd-i / cmd-o -> shift+cmd+[ / shift+cmd+]
+  (lmet i)      (lsft lmet [) (lctl) ()
+  (lmet o)      (lsft lmet ]) (lctl) ()
+  ;; move tab left/right in chrome: shift+cmd-i / shift+cmd-o -> shift+ctrl+pgup / shift+ctrl+pgdn
+  (lsft lmet i) (lsft lctl pgup) (lctl) ()
+  (lsft lmet o) (lsft lctl pgdn) (lctl) ()
+  ;; history back/forward in chrome: cmd-, / cmd-. -> cmd+[ / cmd+]
+  (lmet ,)      (lmet [) (lctl) ()
+  (lmet .)      (lmet ]) (lctl) ()
+  ;; Emacs in the terminal doesn't support M-[, use M-5 instead
+  (lalt [)      (lalt 5) () ()
+)
