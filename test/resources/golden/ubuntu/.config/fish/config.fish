@@ -40,6 +40,11 @@ if status is-interactive
         set -gx PATH "$PNPM_HOME/bin" $PATH
     end
 
+    # user-local binaries
+    if not contains -- "$HOME/.local/bin" $PATH
+        set -gx PATH "$HOME/.local/bin" $PATH
+    end
+
     function register-cmd
         set -l CMD $argv[1]
         set -l TARGET_DIR ~/.config/fish/completions
