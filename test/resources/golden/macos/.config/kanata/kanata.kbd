@@ -1,5 +1,6 @@
 (defcfg
   process-unmapped-keys yes
+  concurrent-tap-hold yes
   macos-dev-names-include (
   "SONSEI"
   "Sonsei-BLE - 1"
@@ -36,6 +37,11 @@ M-f1	M-f2	M-f3	M-f4	M-f5		lft	down	up	rght	_
 _	S-'	S-9	S-0	S-1		S-/	S-;	S-2	S-`	_
 @l-min	@l-eql	@l-lbrk	@l-rbrk	S-3		S-8	@r-scln	@r-grv	@r-bksl	@r-apo
 			_	_		_	_
+)
+
+(defchordsv2
+  ;; Press f + j together to enable Caps Word on the alpha layer.
+  (f j) (caps-word 2000) 50 all-released (nav sym)
 )
 
 (defalias
