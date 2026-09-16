@@ -74,11 +74,11 @@ _	S-'	S-9	S-0	S-1		S-/	S-;	S-2	S-`	_
 ;; Converted from ~/.config/skhd/skhdrc
 (defoverridesv2
   ;; prev/next tab in chrome: cmd-i / cmd-o -> shift+cmd+[ / shift+cmd+]
-  (lmet i)      (lsft lmet [) (lctl) ()
-  (lmet o)      (lsft lmet ]) (lctl) ()
+  (lmet i)      (lsft lmet [) (lctl lalt) ()
+  (lmet o)      (lsft lmet ]) (lctl lalt) ()
   ;; move tab left/right in chrome: shift+cmd-i / shift+cmd-o -> shift+ctrl+pgup / shift+ctrl+pgdn
-  (lsft lmet i) (lsft lctl pgup) (lctl) ()
-  (lsft lmet o) (lsft lctl pgdn) (lctl) ()
+  (lsft lmet i) (lsft lctl pgup) (lctl lalt) ()
+  (lsft lmet o) (lsft lctl pgdn) (lctl lalt) ()
   ;; history back/forward in chrome: cmd-, / cmd-. -> cmd+[ / cmd+]
   (lmet ,)      (lmet [) (lctl) ()
   (lmet .)      (lmet ]) (lctl) ()
