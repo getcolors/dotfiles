@@ -1,4 +1,5 @@
 (defcfg
+  macos-continue-if-no-devs-found yes
   process-unmapped-keys yes
   concurrent-tap-hold yes
   macos-dev-names-include (
@@ -34,7 +35,7 @@ M-f1	M-f2	M-f3	M-f4	M-f5		lft	down	up	rght	_
 
 (deflayer sym
 +	S-6	{	}	S-5		S-7	S-,	S-.	S-4	S-\
-_	S-'	S-9	S-0	S-1		S-/	S-;	S-2	S-`	_
+S--	S-'	S-9	S-0	S-1		S-/	S-;	S-2	S-`	_
 @l-min	@l-eql	@l-lbrk	@l-rbrk	S-3		S-8	@r-scln	@r-grv	@r-bksl	@r-apo
 			_	_		_	_
 )
