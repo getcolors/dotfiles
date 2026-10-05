@@ -1,4 +1,9 @@
 if status is-interactive
+    # Optional local secrets, maintained outside the managed dotfiles.
+    if test -f "$HOME/.config/fish/secrets.fish"; and test -r "$HOME/.config/fish/secrets.fish"
+        source "$HOME/.config/fish/secrets.fish"
+    end
+
     set -gx DIRENV_LOG_FORMAT ""
 
     /opt/homebrew/bin/brew shellenv | source
