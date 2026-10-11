@@ -12,6 +12,9 @@ if status is-interactive
     if not command -q nix; and test -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
         source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
     end
+    # Prefer the official Atuin installation after platform PATH setup.
+    fish_add_path --path --move --prepend "$HOME/.atuin/bin"
+
     starship init fish | source
     zoxide init fish | source
     direnv hook fish | source
