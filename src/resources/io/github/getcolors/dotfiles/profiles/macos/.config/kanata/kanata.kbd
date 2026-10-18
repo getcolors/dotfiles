@@ -4,6 +4,7 @@
   concurrent-tap-hold yes
   macos-dev-names-include (
   "SONSEI"
+  "0xC246D2360FE9487B"
   "Sonsei-BLE - 1"
   "Sonsei-BLE - 2"
   "Sonsei-BLE - 3"
