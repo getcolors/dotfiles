@@ -48,7 +48,8 @@ independent: re-copy it after every skill update.
 ## Development
 
 ```sh
-uv sync --extra test
+devenv shell        # or direnv allow; provides Python 3.12, uv and git
+uv sync --locked --extra test
 uv run pytest
 uv run dotfiles plan
 uv run python scripts/test-launcher.py --local  # launcher against this tree
