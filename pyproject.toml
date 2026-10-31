@@ -4,7 +4,9 @@ version = "0.1.0"
 description = "Render the getcolors Ubuntu or macOS dotfiles profile and install it into a home directory"
 license = "MIT"
 requires-python = ">=3.11"
-dependencies = ["blue @ git+https://github.com/getcolors/blue.git@9a8ef82373205a7a3c4f543e7f76fa2ca748172d"]
+dependencies = [
+    "blue @ git+https://github.com/getcolors/blue.git@0c5ee6a279a61cf247c9af2a0621d715c848efd4",
+]
 
 [project.scripts]
 dotfiles = "dotfiles.cli:main"
