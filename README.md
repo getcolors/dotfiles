@@ -1,46 +1,42 @@
 # dotfiles
 
-Ubuntu and macOS home configuration as a green Package Skill.
+Ubuntu and macOS home configuration as a portable Python CLI.
 
-The package preserves the non-secret managed files from `dotfiles-v3`, renders
-a selected profile reproducibly under `.colors/`, and installs only those files
-into an explicitly configured local target. Credential-bearing AWS and
-DigitalOcean CLI files are excluded.
+The package holds the non-secret managed files from `dotfiles-v3`, renders the
+selected profile in memory, and installs only those files into a configured
+local target. Credential-bearing AWS and DigitalOcean CLI files are excluded.
 
-Shared files live under `src/resources/io/github/getcolors/dotfiles/common/`.
-Files used by only one platform live under `profiles/<profile>/`. Common files
-are Selmer templates with the final output filename and can use
-`{% if profile = "macos" %}` conditionals. The renderer discovers and sorts
-resources at runtime; defining the same path in common and a profile is an
-error.
-
-```sh
-./green build
-./green diff
-./green create --dry-run
-COLORS_PAR_DOTFILES_PREVENT_OVERWRITE=false ./green create
-```
-
-`diff` renders first and prints color unified differences against the target.
-Ordinary drift and missing target files are informational and exit successfully.
-`delete` is intentionally unsupported.
-
-## Install into a project
+Shared files live under `src/resources/io/github/getcolors/dotfiles/common/`;
+files for one platform live under `profiles/<profile>/`. Shared files keep their
+final filename and may use only `{% if profile = "ubuntu" %}` /
+`{% if profile = "macos" %}`, `{% else %}` and `{% endif %}`; any other template
+syntax is an error. Profile files are copied verbatim. A path defined in both
+common and a profile is an error.
 
 ```sh
-npx skills add getcolors/dotfiles
-cp .agents/skills/package-dotfiles-green/green green
-chmod +x green
+dotfiles plan              # unified diff target -> rendered; never writes
+dotfiles apply --dry-run   # list what would be written
+dotfiles apply             # write missing/changed files, backing up changes
 ```
 
-The root launcher is an installed copy. Re-copy it after every skill update.
-Desired state is documented in
-`skills/package-dotfiles-green/references/configuration.md`.
+Options: `-f FILE` (default `./colors.yml` in the current directory only),
+`--json`, `--quiet`, `--verbose`. Drift is informational: `plan` exits 0.
+`apply` never prompts and never deletes; changed files are backed up to
+`<target>/.local/state/dotfiles/backups/<UTC timestamp>/` first.
+Configuration is documented in
+[`skills/dotfiles/references/configuration.md`](skills/dotfiles/references/configuration.md).
+
+Other packages can render a profile without the CLI:
+
+```python
+from dotfiles.render import render_profile
+files = render_profile("ubuntu")  # {relative POSIX path: bytes}, sorted
+```
 
 ## Development
 
 ```sh
-bb test
-bb golden
-./scripts/launcher.sh
+uv sync --extra test
+uv run pytest
+uv run dotfiles plan
 ```

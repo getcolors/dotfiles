@@ -1,0 +1,26 @@
+[project]
+name = "dotfiles"
+version = "0.1.0"
+description = "Render the getcolors Ubuntu or macOS dotfiles profile and install it into a home directory"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = ["blue @ git+https://github.com/getcolors/blue.git@9a8ef82373205a7a3c4f543e7f76fa2ca748172d"]
+
+[project.scripts]
+dotfiles = "dotfiles.cli:main"
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dotfiles"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

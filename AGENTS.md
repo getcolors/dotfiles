@@ -1,42 +1,40 @@
-# CLAUDE.md
+# AGENTS.md
 
 ## What this is
 
-`dotfiles` is a green-only Package Skill that deterministically renders and
-installs Ubuntu or macOS home configuration. It ships
-`package-dotfiles-green`; root `./green` symlinks to its launcher payload.
-Credential-bearing AWS and DigitalOcean files from the source configuration are
-intentionally excluded.
+`dotfiles` is a Python package and Agent Skill that renders the getcolors
+Ubuntu or macOS home configuration and installs it into a local directory. The
+CLI (`dotfiles plan|apply`) runs a small Blue DAG: validate -> render ->
+plan | apply. Credential-bearing AWS and DigitalOcean files are intentionally
+excluded; the package reads no credentials and no `COLORS_PAR_*` variables.
 
 ## Commands
 
 ```sh
-bb test
-bb golden
-./scripts/launcher.sh
-./green build
-./green diff
-./green create --dry-run
+uv sync --extra test
+uv run pytest
+uv run dotfiles plan
+uv run dotfiles apply --dry-run
 ```
 
-Never run a real create without explicit authorization. A create writes managed
-files into the configured local target. `delete` is unsupported.
+**A real `apply` against a live home directory requires explicit user
+authorization.** It writes without prompting. Tests must use temporary
+directories; a read-only `plan` against `~` is fine.
 
 ## Safety and architecture
 
-- `colors.yml` is non-secret desired state; keys are kebab-case.
-- Never export `COLORS_PAR_PROFILE`.
-- Never edit or commit `.colors/`.
-- Keep `dotfiles-prevent-overwrite: true`; lift it only for one intentional run
-  through `COLORS_PAR_DOTFILES_PREVENT_OVERWRITE=false`.
-- Build replaces `.colors/<profile>/dotfiles`; create copies those managed files
-  to `dotfiles-target` and verifies them byte-for-byte.
-- Shared files are final-filename Selmer templates under
-  `src/resources/io/github/getcolors/dotfiles/common/`; profile-only files are
-  under `profiles/<profile>/`. Runtime discovery is sorted and rejects duplicate
-  paths. Templates receive only `profile` and use Selmer `if` tags for variants.
-- Diff renders first, then prints target-to-rendered unified differences. Drift
-  and missing targets are informational; operational failures remain errors.
-- Keep behaviour in library namespaces, not the copied launcher.
-- After pushing package code, run `bb pin`, commit, and push. Consumers must
-  synchronize their installed launcher copy after every update.
+- `colors.yml` holds only `dotfiles-profile` and `dotfiles-target`; unknown
+  keys are errors. Rendering is in memory; there is no `.colors/` output.
+- `apply` writes only missing or changed managed files, atomically, verifies
+  them, refuses symlinked destination paths, backs up changed files under
+  `<target>/.local/state/dotfiles/backups/<UTC timestamp>/`, and never deletes.
+- `src/dotfiles/render.py` is the dependency-free public render API
+  (`render_profile(profile) -> dict[str, bytes]`). Keep Blue and YAML out of it.
+- Templates support only profile `if`/`else`/`endif`; anything else fails
+  closed. The golden test pins render output byte-for-byte; review any golden
+  change deliberately.
+- **getcolors/walter reads these files.** A change to the template syntax or the
+  file layout affects Walter; coordinate it there.
+- Keep behaviour in the package, not the launcher. The launcher pins an
+  immutable commit: after package changes are pushed, update its SHA to the
+  pushed commit in a follow-up commit. Never invent a SHA.
