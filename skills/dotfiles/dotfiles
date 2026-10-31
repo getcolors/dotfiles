@@ -1,7 +1,9 @@
 #!/usr/bin/env -S uv run --script
 # /// script
 # requires-python = ">=3.11"
-# dependencies = ["dotfiles @ git+https://github.com/getcolors/dotfiles.git@243bcdc9bd79f103f435b8f8035b0b8a7e5bf35d"]
+# dependencies = [
+#     "dotfiles @ git+https://github.com/getcolors/dotfiles.git@2adb9df03e707c4b5f3f68eb665a4318c9c9ac11",
+# ]
 # ///
 """Portable dotfiles CLI; configuration selection follows the caller's directory."""
 from dotfiles.cli import main
