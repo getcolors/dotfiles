@@ -74,7 +74,7 @@ def tree(root, files):
 
 
 def test_duplicate_common_and_profile_path_is_an_error(tmp_path, monkeypatch):
-    tree(tmp_path, {'common/.a': 'a', 'profiles/ubuntu/.a': 'b'})
+    tree(tmp_path, {'common/.a': 'a', 'ubuntu/.a': 'b'})
     monkeypatch.setattr(render, 'RESOURCES', tmp_path)
     with pytest.raises(TemplateError, match='duplicate'):
         render_profile('ubuntu')
@@ -82,7 +82,7 @@ def test_duplicate_common_and_profile_path_is_an_error(tmp_path, monkeypatch):
 
 def test_profile_files_are_copied_verbatim(tmp_path, monkeypatch):
     tree(tmp_path, {'common/.a': '{% if profile = "ubuntu" %}u{% endif %}',
-                    'profiles/macos/.b': '{{ untouched }}'})
+                    'macos/.b': '{{ untouched }}'})
     monkeypatch.setattr(render, 'RESOURCES', tmp_path)
     assert render_profile('macos') == {'.a': b'', '.b': b'{{ untouched }}'}
     assert render_profile('ubuntu') == {'.a': b'u'}

@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-GOLDEN = Path(__file__).resolve().parents[1] / 'test/resources/golden'
+GOLDEN = Path(__file__).resolve().parent / 'fixtures/golden'
 
 
 @pytest.fixture(autouse=True)

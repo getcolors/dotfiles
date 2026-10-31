@@ -1,6 +1,7 @@
 """Render one packaged dotfiles profile in memory.
 
-Shared files under ``common/`` are templates. The template language is
+Packaged files live under ``files/``: ``common/`` holds shared templates and
+``ubuntu/`` or ``macos/`` hold profile-only files. The template language is
 deliberately restricted to profile conditionals::
 
     {% if profile = "ubuntu" %} ... {% else %} ... {% endif %}
@@ -15,7 +16,7 @@ from pathlib import Path
 import re
 
 PROFILES = ('macos', 'ubuntu')
-RESOURCES = Path(__file__).resolve().parents[1] / 'resources/io/github/getcolors/dotfiles'
+RESOURCES = Path(__file__).resolve().parent / 'files'
 
 _TOKEN = re.compile(r'(\{%.*?%\}|\{\{.*?\}\}|\{#.*?#\})', re.DOTALL)
 _CONDITION = re.compile(r'if\s+profile\s*=\s*[\'"](ubuntu|macos)[\'"]')
@@ -83,7 +84,7 @@ def render_profile(profile: str) -> dict[str, bytes]:
     common = _files(RESOURCES / 'common')
     if not common:
         raise TemplateError('packaged dotfiles have no common files')
-    specific = _files(RESOURCES / 'profiles' / profile)
+    specific = _files(RESOURCES / profile)
     duplicates = sorted(common.keys() & specific.keys())
     if duplicates:
         raise TemplateError('duplicate common/profile dotfiles: ' + ', '.join(duplicates))

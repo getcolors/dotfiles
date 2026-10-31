@@ -6,8 +6,8 @@ The package holds the non-secret managed files from `dotfiles-v3`, renders the
 selected profile in memory, and installs only those files into a configured
 local target. Credential-bearing AWS and DigitalOcean CLI files are excluded.
 
-Shared files live under `src/resources/io/github/getcolors/dotfiles/common/`;
-files for one platform live under `profiles/<profile>/`. Shared files keep their
+Shared files live under `src/dotfiles/files/common/`; files for one platform
+live under `src/dotfiles/files/<profile>/` and ship as package data. Shared files keep their
 final filename and may use only `{% if profile = "ubuntu" %}` /
 `{% if profile = "macos" %}`, `{% else %}` and `{% endif %}`; any other template
 syntax is an error. Profile files are copied verbatim. A path defined in both
