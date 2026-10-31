@@ -33,10 +33,23 @@ from dotfiles.render import render_profile
 files = render_profile("ubuntu")  # {relative POSIX path: bytes}, sorted
 ```
 
+## Install into a project
+
+```sh
+npx skills add getcolors/dotfiles
+cp .agents/skills/dotfiles/dotfiles dotfiles
+chmod +x dotfiles
+```
+
+The launcher is a PEP 723 `uv run --script` file pinned to an immutable
+commit; root `./dotfiles` in this repository links to it. An installed copy is
+independent: re-copy it after every skill update.
+
 ## Development
 
 ```sh
 uv sync --extra test
 uv run pytest
 uv run dotfiles plan
+uv run python scripts/test-launcher.py --local  # launcher against this tree
 ```

@@ -15,6 +15,7 @@ uv sync --extra test
 uv run pytest
 uv run dotfiles plan
 uv run dotfiles apply --dry-run
+uv run python scripts/test-launcher.py --local
 ```
 
 **A real `apply` against a live home directory requires explicit user
@@ -35,6 +36,7 @@ directories; a read-only `plan` against `~` is fine.
   change deliberately.
 - **getcolors/walter reads these files.** A change to the template syntax or the
   file layout affects Walter; coordinate it there.
-- Keep behaviour in the package, not the launcher. The launcher pins an
+- Keep behaviour in the package, not the launcher (`skills/dotfiles/dotfiles`,
+  linked from root `./dotfiles`). The launcher pins an
   immutable commit: after package changes are pushed, update its SHA to the
   pushed commit in a follow-up commit. Never invent a SHA.
