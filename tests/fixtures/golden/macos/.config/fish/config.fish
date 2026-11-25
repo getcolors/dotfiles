@@ -106,4 +106,11 @@ if status is-interactive
     set -gx POETRY_VIRTUALENVS_IN_PROJECT true
     set -gx TZ 'Europe/Berlin'
 
+    # Show system info last, after PATH setup (Homebrew/Nix on macOS).
+    # Skip dumb terminals (Emacs M-x shell, TRAMP) and VS Code; full emulators like ghostel are fine.
+    if test "$TERM" != dumb; and test "$TERM_PROGRAM" != vscode
+        if type -q fastfetch
+            fastfetch
+        end
+    end
 end
