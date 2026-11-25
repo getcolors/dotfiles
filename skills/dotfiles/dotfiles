@@ -2,7 +2,7 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#     "dotfiles @ git+https://github.com/getcolors/dotfiles.git@2adb9df03e707c4b5f3f68eb665a4318c9c9ac11",
+#     "dotfiles @ git+https://github.com/getcolors/dotfiles.git@a9160e0acc33c0ecb9264dca2e8fc224c37d3ed2",
 # ]
 # ///
 """Portable dotfiles CLI; configuration selection follows the caller's directory."""
