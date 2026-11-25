@@ -11,7 +11,9 @@ error is reported at once. Keys from the retired Green package (`profile`,
 memory, and `apply` backs up changed files instead of requiring an overwrite
 override. No `COLORS_PAR_*` variables are read.
 
-`dotfiles-profile` selects the packaged profile. A real `apply` refuses
+`dotfiles-profile` selects the packaged profile. A non-empty
+`DOTFILES_PROFILE` environment variable replaces it (and may supply it when
+`colors.yml` omits it); its value is validated the same way. A real `apply` refuses
 `ubuntu` unless running on Linux and `macos` unless running on macOS; `plan`
 and `apply --dry-run` work anywhere.
 

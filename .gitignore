@@ -1,4 +1,5 @@
 .envrc.private
+.envrc.profile
 .devenv/
 .direnv/
 .venv*/

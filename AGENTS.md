@@ -7,6 +7,9 @@ Ubuntu or macOS home configuration and installs it into a local directory. The
 CLI (`dotfiles plan|apply`) runs a small Blue DAG: validate -> render ->
 plan | apply. Credential-bearing AWS and DigitalOcean files are intentionally
 excluded; the package reads no credentials and no `COLORS_PAR_*` variables.
+The only environment input is `DOTFILES_PROFILE`, which overrides
+`dotfiles-profile`; this repository's `.envrc` loads the gitignored
+`.envrc.profile` to set it locally.
 
 ## Commands
 
@@ -26,7 +29,7 @@ directories; a read-only `plan` against `~` is fine.
 ## Safety and architecture
 
 - `colors.yml` holds only `dotfiles-profile` and `dotfiles-target`; unknown
-  keys are errors. Rendering is in memory; there is no `.colors/` output.
+  keys are errors. A non-empty `DOTFILES_PROFILE` replaces `dotfiles-profile`. Rendering is in memory; there is no `.colors/` output.
 - `apply` writes only missing or changed managed files, atomically, verifies
   them, refuses symlinked destination paths, backs up changed files under
   `<target>/.local/state/dotfiles/backups/<UTC timestamp>/`, and never deletes.

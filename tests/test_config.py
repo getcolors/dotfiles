@@ -47,3 +47,24 @@ def test_non_mapping_and_invalid_yaml(tmp_path):
         load(tmp_path / 'bad.yml')
     with pytest.raises(DotfilesError, match='not found'):
         load(tmp_path / 'missing.yml')
+
+
+def test_profile_environment_overrides_colors_yml(tmp_path):
+    path = tmp_path / 'colors.yml'
+    path.write_text('dotfiles-profile: ubuntu\n')
+    assert load(path, {})['dotfiles-profile'] == 'ubuntu'
+    assert load(path, {'DOTFILES_PROFILE': ''})['dotfiles-profile'] == 'ubuntu'
+    assert load(path, {'DOTFILES_PROFILE': 'macos'})['dotfiles-profile'] == 'macos'
+
+
+def test_profile_environment_supplies_a_missing_profile(tmp_path):
+    path = tmp_path / 'colors.yml'
+    path.write_text('dotfiles-target: "~"\n')
+    assert load(path, {'DOTFILES_PROFILE': 'macos'})['dotfiles-profile'] == 'macos'
+
+
+def test_invalid_profile_environment_is_rejected(tmp_path):
+    path = tmp_path / 'colors.yml'
+    path.write_text('dotfiles-profile: ubuntu\n')
+    with pytest.raises(DotfilesError, match='dotfiles-profile must be one of'):
+        load(path, {'DOTFILES_PROFILE': 'windows'})

@@ -12,6 +12,7 @@ from .render import PROFILES
 
 DEFAULTS = {'dotfiles-target': '~'}
 KEYS = ('dotfiles-profile', 'dotfiles-target')
+PROFILE_ENV = 'DOTFILES_PROFILE'
 RETIRED = {
     'profile': 'remove it; dotfiles renders in memory and has no generated work tree',
     'workdir': 'remove it; dotfiles renders in memory and writes no .colors/ output',
@@ -20,8 +21,12 @@ RETIRED = {
 }
 
 
-def load(path: str | os.PathLike) -> dict:
-    """Read and validate ``path``; return ``{'dotfiles-profile', 'dotfiles-target'}``."""
+def load(path: str | os.PathLike, environ=None) -> dict:
+    """Read and validate ``path``; return ``{'dotfiles-profile', 'dotfiles-target'}``.
+
+    A non-empty ``DOTFILES_PROFILE`` in ``environ`` (default ``os.environ``)
+    replaces ``dotfiles-profile`` before validation.
+    """
     path = Path(path)
     try:
         text = path.read_text(encoding='utf-8')
@@ -33,6 +38,9 @@ def load(path: str | os.PathLike) -> dict:
         raw = load_yaml(text)
     except yaml.YAMLError:
         raise DotfilesError(f'Configuration file {path} is not valid YAML.') from None
+    profile = (os.environ if environ is None else environ).get(PROFILE_ENV)
+    if profile and isinstance(raw, dict):
+        raw = {**raw, 'dotfiles-profile': profile}
     return validate(raw)
 
 
